@@ -19,7 +19,7 @@ phases:
     commands:
 
       # Make sure we're in the project directory within our GOPATH
-      #- cd "/go/src/handler"
+      - cd "/go/src/quillard"
 
       # Fetch all dependencies
       #- go get ./...
@@ -37,7 +37,7 @@ phases:
     commands:
 
       # Build our go application
-      #- go build -o main
+      - go build -o Quillard
 
       # Copy static assets to S3, and package application with AWS CloudFormation/SAM
       #- aws s3 cp --recursive public/ s3://$WEBSITE_S3_BUCKET/public/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
