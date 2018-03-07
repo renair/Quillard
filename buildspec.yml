@@ -44,18 +44,20 @@ phases:
     commands:
 
       # Build our go application
-      - go build -o Quillard
-      
-      - cp -R "./web" "/build/"
-      
-      - cp "Quillard" "/build/"
+      - go build
 
       # Copy static assets to S3, and package application with AWS CloudFormation/SAM
       #- aws s3 cp --recursive public/ s3://$WEBSITE_S3_BUCKET/public/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
       #- sed -i -e "s|assets/|$WEBSITE_S3_PREFIX/public/assets/|g" public/index.html
       #- aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
-
-#artifacts:
-#  type: zip
-#  files:
-#    - template-export.yml
+  post_build:
+    commands:
+      - cp -R "./web" "/build/"
+      
+      - cp "quillard" "/build/"
+      
+      - find /
+artifacts:
+  files:
+    - '**/*'
+  base-directory: '/build/'
