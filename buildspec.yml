@@ -56,7 +56,8 @@ phases:
       
       - cp "quillard" "/build/"
       
-      - find /
+      - find /build
+
 artifacts:
   files:
     - '**/*'
