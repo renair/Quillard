@@ -1,2 +1,4 @@
 pkg
-**/quillard
+bin
+src/quillard/quillard
+src/github.com/
