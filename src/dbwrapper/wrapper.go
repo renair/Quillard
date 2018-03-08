@@ -37,7 +37,22 @@ func (conn *DBConnection) Select(table string, fields ...string) (*sql.Rows, err
 		flds = "*"
 	}
 	query := fmt.Sprintf("SELECT %s FROM %s;", flds, table)
-	fmt.Println(query)
+	return conn.connection.Query(query)
+}
+
+//Select all fields data in specified table
+func (conn *DBConnection) SelectBy(table string, keys map[string]interface{}, fields ...string) (*sql.Rows, error) {
+	flds := ""
+	filterExpression := joinKeys(keys)
+	if len(filterExpression) > 0 {
+		filterExpression = "WHERE " + filterExpression
+	}
+	if len(fields) > 0 {
+		flds = strings.Join(fields, ", ")
+	} else {
+		flds = "*"
+	}
+	query := fmt.Sprintf("SELECT %s FROM %s %s;", flds, table, filterExpression)
 	return conn.connection.Query(query)
 }
 
