@@ -50,6 +50,7 @@ phases:
       #- aws s3 cp --recursive public/ s3://$WEBSITE_S3_BUCKET/public/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
       #- sed -i -e "s|assets/|$WEBSITE_S3_PREFIX/public/assets/|g" public/index.html
       #- aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
+
   post_build:
     commands:
       - cp -R "./web" "/build/"
@@ -57,6 +58,11 @@ phases:
       - cp "quillard" "/build/"
       
       - find /build
+      
+      - DATE_TIME=`date '+%Y_%m_%d/%H_%M_%S'`
+      
+      #Manual deploying to S3
+      - aws s3 cp "/build/" "s3://quillard-builds/$DATE_TIME/" --recursive
 
 artifacts:
   files:
