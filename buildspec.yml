@@ -59,10 +59,15 @@ phases:
       
       - find /build
       
-      - DATE_TIME=`date '+%Y_%m_%d/%H_%M_%S'`
+      #Set variables
+	  - DATE=`date '+%Y_%m_%d/'`
+	  - FILENAME=`date '+%H_%M_%S'`.zip
       
+	  #Manual zipping build files
+	  - zip -r9 "./$FILENAME" "/build/*"
+	  
       #Manual deploying to S3
-      - aws s3 cp "/build/" "s3://quillard-builds/$DATE_TIME/" --recursive
+      - aws s3 cp "./$FILENAME" "s3://quillard-builds/$DATE/" # --recursive
 
 artifacts:
   files:

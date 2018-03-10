@@ -2,6 +2,7 @@ package users
 
 import (
 	"dbwrapper"
+	"net/http"
 )
 
 const (
@@ -20,5 +21,11 @@ func Init(conn *dbwrapper.DBConnection) {
 func chekInitialization() {
 	if connection == nil {
 		panic("DBConnection is not initialized!!!")
+	}
+}
+
+func ExportHandlers() []http.HandlerFunc {
+	return []http.HandlerFunc{
+		LoginHandler,
 	}
 }
