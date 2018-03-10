@@ -2,21 +2,14 @@ package users
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
 func LoginHandler(resp http.ResponseWriter, request *http.Request) {
-	fmt.Println("Here is handler!!!")
-	userJson := LoginRequest{}
 	defer request.Body.Close()
-	bytes, bodyReadErr := ioutil.ReadAll(request.Body)
-	if bodyReadErr != nil {
-		resp.Write([]byte(bodyReadErr.Error()))
-		return
-	}
-	unmarshallingError := json.Unmarshal(bytes, &userJson)
+	userJson := LoginRequest{}
+	decoder := json.NewDecoder(request.Body)
+	unmarshallingError := decoder.Decode(&userJson)
 	if unmarshallingError != nil {
 		resp.Write([]byte(unmarshallingError.Error()))
 	}
