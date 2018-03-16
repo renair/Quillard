@@ -7,6 +7,7 @@ import (
 
 const (
 	TABLENAME = "users"
+	APIPREFIX = "user"
 )
 
 var connection *dbwrapper.DBConnection = nil
@@ -24,8 +25,9 @@ func chekInitialization() {
 	}
 }
 
-func ExportHandlers() []http.HandlerFunc {
-	return []http.HandlerFunc{
-		LoginHandler,
+func ExportedHandlers() map[string]http.HandlerFunc {
+	return map[string]http.HandlerFunc{
+		"login":    LoginHandler,
+		"register": RegisterHandler,
 	}
 }

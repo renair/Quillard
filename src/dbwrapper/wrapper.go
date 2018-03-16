@@ -9,6 +9,7 @@ import (
 )
 
 type DBConnection struct {
+	Host       string
 	User       string
 	Password   string
 	Dbname     string
@@ -18,7 +19,7 @@ type DBConnection struct {
 //Connect to data base using User, Password, Dbname fields.
 //Return error or nill if connection was successfull.
 func (con *DBConnection) Connect() error {
-	connpath := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", con.User, con.Password, con.Dbname)
+	connpath := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", con.User, con.Password, con.Host, con.Dbname)
 	connection, err := sql.Open("postgres", connpath)
 	if err != nil {
 		con.connection = nil
@@ -65,6 +66,20 @@ func (conn *DBConnection) Update(table string, keys map[string]interface{}, args
 	joinedArgs := joinArgs(args)
 	query := fmt.Sprintf("UPDATE %s SET %s %s;", table, joinedArgs, filterExpression)
 	fmt.Println(query)
+	_, err := conn.connection.Exec(query)
+	return err
+}
+
+func (conn *DBConnection) Insert(table string, data map[string]interface{}) error {
+	fields := ""
+	values := ""
+	for key, val := range data {
+		fields += key + ","
+		values += fmt.Sprintf("'%s',", val)
+	}
+	fields = fields[:len(fields)-1]
+	values = values[:len(values)-1]
+	query := fmt.Sprintf("INSERT INTO %s(%s) VALUES (%s);", table, fields, values)
 	_, err := conn.connection.Exec(query)
 	return err
 }
