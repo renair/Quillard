@@ -1,17 +1,16 @@
 package users
 
 import (
-	"crypto/sha1"
 	"errors"
-	"fmt"
 )
 
 //Ruturn user object based on login and password
 func logInUser(credential LoginRequest) *User {
 	chekInitialization()
-	keys := make(map[string]interface{})
-	keys["email"] = credential.Email
-	keys["password"] = fmt.Sprintf("%x", sha1.Sum([]byte(credential.Password)))
+	keys := map[string]interface{}{
+		"email":    credential.Email,
+		"password": encodePassword(credential.Password),
+	}
 	res, err := connection.SelectBy(TABLENAME, keys, "id", "nickname", "password")
 	defer res.Close()
 	var user *User = nil
@@ -25,15 +24,16 @@ func logInUser(credential LoginRequest) *User {
 	return user
 }
 
+//Check if user already exist and if no create it
 func registerUser(credential RegisterRequest) error {
 	chekInitialization()
-	if isNicknameExist(credential.Nickname) || isEmailRegistered(credential.Email) {
+	if isFieldExist("nickname", credential.Nickname) || isFieldExist("email", credential.Email) {
 		return errors.New("Email or Nickname Already exists.")
 	}
 	args := map[string]interface{}{
 		"email":    credential.Email,
 		"nickname": credential.Nickname,
-		"password": fmt.Sprintf("%x", sha1.Sum([]byte(credential.Password))),
+		"password": encodePassword(credential.Password),
 	}
 	return connection.Insert(TABLENAME, args)
 }
