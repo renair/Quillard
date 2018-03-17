@@ -75,7 +75,7 @@ func (conn *DBConnection) Insert(table string, data map[string]interface{}) erro
 	values := ""
 	for key, val := range data {
 		fields += key + ","
-		values += fmt.Sprintf("'%s',", val)
+		values += fmt.Sprintf("'%v',", val)
 	}
 	fields = fields[:len(fields)-1]
 	values = values[:len(values)-1]

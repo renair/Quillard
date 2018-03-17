@@ -1,6 +1,7 @@
 package main
 
 import (
+	"core/sessions"
 	"core/users"
 	"dbwrapper"
 	"fmt"
@@ -23,6 +24,7 @@ func main() {
 	}
 	if err := connection.Connect(); err == nil {
 		fmt.Println("Connected!")
+		sessions.Init(&connection)
 		users.Init(&connection)
 		for url, handler := range users.ExportedHandlers() {
 			absoluteUrl := fmt.Sprintf("/%s/%s", users.APIPREFIX, url)

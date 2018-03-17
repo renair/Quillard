@@ -1,16 +1,15 @@
 package sessions
 
 import (
-	"core/users"
 	"fmt"
 )
 
-func CreateSession(user *users.User) *Session {
+func CreateSession(id int64, keywords ...string) *Session {
 	checkConnection()
 	utc := getCurrentUTC()
 	keys := map[string]interface{}{
-		"user_id": user.Id,
-		"key":     getNewKey(user),
+		"user_id": id,
+		"key":     getNewKey(keywords),
 		"created": utc,
 		"expires": utc + EXPIRETIME,
 	}
@@ -20,10 +19,10 @@ func CreateSession(user *users.User) *Session {
 	}
 	return &Session{
 		Id:      -1,
-		UserId:  keys["user_id"].(int64),
+		UserId:  id,
 		Key:     keys["key"].(string),
-		Created: keys["created"].(int64),
-		Expires: keys["expires"].(int64),
+		Created: utc,
+		Expires: utc + EXPIRETIME,
 	}
 }
 

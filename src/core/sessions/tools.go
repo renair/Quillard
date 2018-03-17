@@ -1,9 +1,9 @@
 package sessions
 
 import (
-	"core/users"
 	"crypto/sha1"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -17,7 +17,11 @@ func getCurrentUTC() int64 {
 	return time.Now().UTC().Unix()
 }
 
-func getNewKey(user *users.User) string {
-	in := fmt.Sprintf("%d:%s:%d", user.Id, user.Nickname, getCurrentUTC())
-	return fmt.Sprintf("%x", sha1.Sum([]byte(in)))
+func getNewKey(keywords []string) string {
+	var in strings.Builder
+	for _, word := range keywords {
+		in.WriteString(":" + word)
+	}
+	inStr := fmt.Sprintf("%s:%v", in.String(), getCurrentUTC())
+	return fmt.Sprintf("%x", sha1.Sum([]byte(inStr)))
 }
