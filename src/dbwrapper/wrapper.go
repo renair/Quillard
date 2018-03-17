@@ -83,3 +83,7 @@ func (conn *DBConnection) Insert(table string, data map[string]interface{}) erro
 	_, err := conn.connection.Exec(query)
 	return err
 }
+
+func (conn *DBConnection) ManualQuery(query string) (*sql.Rows, error) {
+	return conn.connection.Query(query)
+}
