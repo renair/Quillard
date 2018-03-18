@@ -1,7 +1,7 @@
 package sessions
 
 import (
-	"dbwrapper"
+	"qutils/dbwrapper"
 )
 
 const (

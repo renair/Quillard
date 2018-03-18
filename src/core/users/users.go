@@ -1,8 +1,8 @@
 package users
 
 import (
-	"dbwrapper"
 	"net/http"
+	"qutils/dbwrapper"
 )
 
 const (
