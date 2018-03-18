@@ -1,0 +1,1 @@
+alert("Page loaded.\nThis is just JS test.");

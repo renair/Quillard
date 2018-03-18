@@ -48,6 +48,8 @@ func main() {
 		absoluteUrl := fmt.Sprintf("/%s/%s", users.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
+	//Setup static files handling
+	handlerMux.Handle("/", getFileHandler("/", "web"))
 	// Starting server
 	log.Println("Server ready. Starting...")
 	webServer.Handler = handlerMux
