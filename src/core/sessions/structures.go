@@ -10,6 +10,6 @@ type Session struct {
 
 //Clientside Session
 type SessionResponse struct {
-	Key     string `json:key`
-	Expires int64  `json:expires`
+	Key     string `json:"key"`
+	Expires int64  `json:"expires"`
 }

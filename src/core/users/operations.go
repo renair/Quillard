@@ -27,8 +27,11 @@ func logInUser(credential LoginRequest) *User {
 //Check if user already exist and if no - create it
 func registerUser(credential RegisterRequest) (*User, error) {
 	chekInitialization()
-	if isFieldExist("nickname", credential.Nickname) || isFieldExist("email", credential.Email) {
-		return nil, errors.New("Email or Nickname Already exists.")
+	if isFieldExist("nickname", credential.Nickname) {
+		return nil, errors.New("nickname")
+	}
+	if isFieldExist("email", credential.Email) {
+		return nil, errors.New("email")
 	}
 	args := map[string]interface{}{
 		"email":    credential.Email,
