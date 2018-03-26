@@ -5,14 +5,15 @@ import (
 )
 
 const (
-	TABLENAME = "positions"
+	TABLENAME     = "positions"
+	BUILDDISTANCE = 0.0003
 )
 
 var connection *dbwrapper.DBConnection = nil
 
 //Using to connect module to the existing connection.
 //IMPORTANT! Module should be initialized to work!
-func Initialize(conn *dbwrapper.DBConnection) {
+func Init(conn *dbwrapper.DBConnection) {
 	connection = conn
 }
 

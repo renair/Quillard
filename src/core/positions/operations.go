@@ -1,5 +1,9 @@
 package positions
 
+import (
+	"fmt"
+)
+
 //Get position information based on position's ID
 func GetPositionById(id int64) *Position {
 	checkConnection()
@@ -10,9 +14,11 @@ func GetPositionById(id int64) *Position {
 	if dbErr != nil {
 		return nil
 	}
+	defer result.Close()
 	pos := Position{
 		Id: id,
 	}
+	result.Next()
 	result.Scan(&pos.Longitude, &pos.Latitude, &pos.Name)
 	return &pos
 }
@@ -27,9 +33,11 @@ func GetPositionByName(name string) *Position {
 	if dbErr != nil {
 		return nil
 	}
+	defer result.Close()
 	pos := Position{
 		Name: name,
 	}
+	result.Next()
 	result.Scan(&pos.Id, &pos.Longitude, &pos.Latitude)
 	return &pos
 }
@@ -45,16 +53,32 @@ func GetPositionByCoords(longitude float64, latitude float64) *Position {
 	if dbErr != nil {
 		return nil
 	}
+	defer result.Close()
 	pos := Position{
 		Longitude: longitude,
 		Latitude:  latitude,
 	}
+	result.Next()
 	result.Scan(&pos.Id, &pos.Name)
 	return &pos
 }
 
+func CanBuild(pos Position) bool {
+	query := "SELECT * FROM positions WHERE (latitude BETWEEN %f AND %f) AND (longitude BETWEEN %f AND %f)"
+	query = fmt.Sprintf(query, pos.Latitude-BUILDDISTANCE, pos.Latitude+BUILDDISTANCE, pos.Longitude-BUILDDISTANCE, pos.Longitude+BUILDDISTANCE)
+	res, err := connection.ManualQuery(query)
+	return err == nil && !res.Next()
+}
+
 //Save position in db
-func SavePosition(pos Position) error {
+func SavePosition(pos Position) *Position {
 	checkConnection()
-	return connection.Insert(TABLENAME, pos.toKeys())
+	connection.BeginTransaction()
+	if connection.Insert(TABLENAME, pos.toKeys()) != nil {
+		connection.RollbackTransaction()
+		return nil
+	} else {
+		connection.CommitTransaction()
+		return GetPositionByCoords(pos.Longitude, pos.Latitude)
+	}
 }

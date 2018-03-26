@@ -1,4 +1,4 @@
-package users
+package account
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func internalError(resp http.ResponseWriter, request *http.Request) {
 	fmt.Fprint(resp, encodeJson(err))
 }
 
-func jsonUnmurshallingError(resp http.ResponseWriter, request *http.Request) {
+func jsonUnmarshallingError(resp http.ResponseWriter, request *http.Request) {
 	err := UserError{
 		Code:    0,
 		Message: "Bad formed JSON",
@@ -51,10 +51,10 @@ func emailAlreadyExists(resp http.ResponseWriter, req *http.Request) {
 }
 
 //Respond with JSON with error #3 'This nickname already exists'
-func nicknameAlreadyExists(resp http.ResponseWriter, req *http.Request) {
+func nearbyBuildingsExist(resp http.ResponseWriter, req *http.Request) {
 	err := UserError{
 		Code:    3,
-		Message: "This nickname already exists",
+		Message: "There is some structures near you",
 	}
 	fmt.Fprint(resp, encodeJson(err))
 }

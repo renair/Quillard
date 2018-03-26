@@ -1,4 +1,4 @@
-package users
+package account
 
 import (
 	"net/http"
@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	TABLENAME = "users"
-	APIPREFIX = "user"
+	TABLENAME = "accounts"
+	APIPREFIX = "account"
 )
 
 var connection *dbwrapper.DBConnection = nil

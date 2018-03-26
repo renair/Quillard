@@ -1,4 +1,4 @@
-package users
+package account
 
 import (
 	"core/sessions"
@@ -10,12 +10,12 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 	userJson := LoginRequest{}
 	unmarshallingError := decodeJson(request.Body, &userJson)
 	if unmarshallingError != nil {
-		jsonUnmurshallingError(resp, request)
+		jsonUnmarshallingError(resp, request)
 		return
 	}
-	user := logInUser(userJson)
+	user := logInAccount(userJson)
 	if user != nil {
-		session := sessions.CreateSession(user.Id, user.Email, user.Nickname)
+		session := sessions.CreateSession(user.Id, user.Email, user.Password)
 		if session == nil {
 			internalError(resp, request)
 			return
@@ -35,18 +35,18 @@ func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 		resp.Write([]byte(unmarshallingError.Error()))
 		return
 	}
-	user, registerError := registerUser(registerJson)
+	user, registerError := registerAccount(registerJson)
 	if registerError != nil {
 		switch registerError.Error() {
 		case "email":
 			emailAlreadyExists(resp, request)
-		case "nickname":
-			nicknameAlreadyExists(resp, request)
+		case "position":
+			nearbyBuildingsExist(resp, request)
 		default:
 			internalError(resp, request)
 		}
 	} else {
-		session := sessions.CreateSession(user.Id, user.Email, user.Nickname)
+		session := sessions.CreateSession(user.Id, user.Email, user.Password)
 		if session == nil {
 			internalError(resp, request)
 			return

@@ -13,10 +13,13 @@ func CreateSession(id int64, keywords ...string) *Session {
 		"created": utc,
 		"expires": utc + EXPIRETIME,
 	}
+	connection.BeginTransaction()
 	insertionErr := connection.Insert(TABLENAME, keys)
 	if insertionErr != nil {
+		connection.RollbackTransaction()
 		return nil
 	}
+	connection.CommitTransaction()
 	return &Session{
 		Id:      -1,
 		UserId:  id,

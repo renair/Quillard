@@ -1,8 +1,9 @@
 package main
 
 import (
+	"core/account"
+	"core/positions"
 	"core/sessions"
-	"core/users"
 	"fmt"
 	"log"
 	"net/http"
@@ -41,11 +42,12 @@ func main() {
 	log.Println("DB connection established")
 	// Init modules with DB connection
 	sessions.Init(&connection)
-	users.Init(&connection)
+	account.Init(&connection)
+	positions.Init(&connection)
 	// Setup web handlers
-	// core/users handlers
-	for url, handler := range users.ExportedHandlers() {
-		absoluteUrl := fmt.Sprintf("/%s/%s", users.APIPREFIX, url)
+	// core/account handlers
+	for url, handler := range account.ExportedHandlers() {
+		absoluteUrl := fmt.Sprintf("/%s/%s", account.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
 	//Setup static files handling

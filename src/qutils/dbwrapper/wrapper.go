@@ -9,23 +9,27 @@ import (
 )
 
 type DBConnection struct {
-	Host       string
-	User       string
-	Password   string
-	Dbname     string
-	connection *sql.DB
+	Host                string
+	User                string
+	Password            string
+	Dbname              string
+	connection          *sql.DB
+	transactionRequired bool
+	transactionDepth    int16
 }
 
 //Connect to data base using User, Password, Dbname fields.
 //Return error or nill if connection was successfull.
-func (con *DBConnection) Connect() error {
-	connpath := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", con.User, con.Password, con.Host, con.Dbname)
+func (conn *DBConnection) Connect() error {
+	connpath := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", conn.User, conn.Password, conn.Host, conn.Dbname)
 	connection, err := sql.Open("postgres", connpath)
 	if err != nil {
-		con.connection = nil
+		conn.connection = nil
 		return err
 	}
-	con.connection = connection
+	conn.connection = connection
+	conn.transactionRequired = false
+	conn.transactionDepth = 0
 	return nil
 }
 
@@ -65,7 +69,6 @@ func (conn *DBConnection) Update(table string, keys map[string]interface{}, args
 	}
 	joinedArgs := joinArgs(args)
 	query := fmt.Sprintf("UPDATE %s SET %s %s;", table, joinedArgs, filterExpression)
-	fmt.Println(query)
 	_, err := conn.connection.Exec(query)
 	return err
 }
@@ -86,4 +89,28 @@ func (conn *DBConnection) Insert(table string, data map[string]interface{}) erro
 
 func (conn *DBConnection) ManualQuery(query string) (*sql.Rows, error) {
 	return conn.connection.Query(query)
+}
+
+func (conn *DBConnection) BeginTransaction() {
+	conn.transactionDepth++
+	if conn.transactionDepth == 1 {
+		conn.ManualQuery("START TRANSACTION;")
+		conn.transactionRequired = true
+	}
+}
+
+func (conn *DBConnection) CommitTransaction() {
+	conn.transactionDepth--
+	if conn.transactionRequired && conn.transactionDepth == 0 {
+		conn.ManualQuery("COMMIT TRANSACTION;")
+		conn.transactionRequired = false
+	}
+}
+
+func (conn *DBConnection) RollbackTransaction() {
+	conn.transactionDepth--
+	if conn.transactionRequired {
+		conn.ManualQuery("ROLLBACK TRANSACTION;")
+		conn.transactionRequired = false
+	}
 }
