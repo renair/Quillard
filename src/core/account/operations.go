@@ -3,6 +3,7 @@ package account
 import (
 	"core/positions"
 	"errors"
+	"qutils/coder"
 )
 
 //Ruturn user object based on login and password
@@ -10,7 +11,7 @@ func logInAccount(credential LoginRequest) *Account {
 	chekInitialization()
 	keys := map[string]interface{}{
 		"email":    credential.Email,
-		"password": encodePassword(credential.Password),
+		"password": coder.EncodeSha1(credential.Password),
 	}
 	res, err := connection.SelectBy(TABLENAME, keys, "id", "password", "home_position")
 	defer res.Close()
@@ -38,7 +39,7 @@ func registerAccount(credential RegisterRequest) (*Account, error) {
 	userPos := positions.SavePosition(credential.Position)
 	args := map[string]interface{}{
 		"email":         credential.Email,
-		"password":      encodePassword(credential.Password),
+		"password":      coder.EncodeSha1(credential.Password),
 		"home_position": userPos.Id,
 	}
 	insertError := connection.Insert(TABLENAME, args)

@@ -22,7 +22,7 @@ func CreateSession(id int64, keywords ...string) *Session {
 	connection.CommitTransaction()
 	return &Session{
 		Id:      -1,
-		UserId:  id,
+		AccountId:  id,
 		Key:     keys["key"].(string),
 		Created: utc,
 		Expires: utc + EXPIRETIME,
@@ -36,7 +36,7 @@ func GetSession(key string) *Session {
 	rows, _ := connection.ManualQuery(query)
 	if rows.Next() {
 		ses = new(Session)
-		rows.Scan(&ses.Id, &ses.UserId, &ses.Key, &ses.Created, &ses.Expires)
+		rows.Scan(&ses.Id, &ses.AccountId, &ses.Key, &ses.Created, &ses.Expires)
 	}
 	return ses
 }

@@ -2,7 +2,7 @@ package sessions
 
 type Session struct {
 	Id      int64
-	UserId  int64
+	AccountId  int64
 	Key     string
 	Created int64
 	Expires int64

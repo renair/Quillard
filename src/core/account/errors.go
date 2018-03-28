@@ -3,6 +3,7 @@ package account
 import (
 	"fmt"
 	"net/http"
+	"qutils/coder"
 )
 
 //Error structure
@@ -20,7 +21,7 @@ func internalError(resp http.ResponseWriter, request *http.Request) {
 		Message: "Some internal server error occured",
 	}
 	resp.WriteHeader(http.StatusInternalServerError)
-	fmt.Fprint(resp, encodeJson(err))
+	fmt.Fprint(resp, coder.EncodeJson(err))
 }
 
 func jsonUnmarshallingError(resp http.ResponseWriter, request *http.Request) {
@@ -29,7 +30,7 @@ func jsonUnmarshallingError(resp http.ResponseWriter, request *http.Request) {
 		Message: "Bad formed JSON",
 	}
 	resp.WriteHeader(http.StatusBadRequest)
-	fmt.Fprint(resp, encodeJson(err))
+	fmt.Fprint(resp, coder.EncodeJson(err))
 }
 
 //Respond with JSON with error #1 'This account doesn't exists or password incorrect'
@@ -38,7 +39,7 @@ func loginIncorrect(resp http.ResponseWriter, request *http.Request) {
 		Code:    1,
 		Message: "This account doesn't exists or password incorrect",
 	}
-	fmt.Fprint(resp, encodeJson(err))
+	fmt.Fprint(resp, coder.EncodeJson(err))
 }
 
 //Respond with JSON with error #2 'This email already registered'
@@ -47,7 +48,7 @@ func emailAlreadyExists(resp http.ResponseWriter, req *http.Request) {
 		Code:    2,
 		Message: "This email already registered",
 	}
-	fmt.Fprint(resp, encodeJson(err))
+	fmt.Fprint(resp, coder.EncodeJson(err))
 }
 
 //Respond with JSON with error #3 'This nickname already exists'
@@ -56,5 +57,5 @@ func nearbyBuildingsExist(resp http.ResponseWriter, req *http.Request) {
 		Code:    3,
 		Message: "There is some structures near you",
 	}
-	fmt.Fprint(resp, encodeJson(err))
+	fmt.Fprint(resp, coder.EncodeJson(err))
 }

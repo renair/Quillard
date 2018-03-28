@@ -3,12 +3,13 @@ package account
 import (
 	"core/sessions"
 	"net/http"
+	"qutils/coder"
 )
 
 func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
 	userJson := LoginRequest{}
-	unmarshallingError := decodeJson(request.Body, &userJson)
+	unmarshallingError := coder.DecodeJson(request.Body, &userJson)
 	if unmarshallingError != nil {
 		jsonUnmarshallingError(resp, request)
 		return
@@ -20,7 +21,7 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 			internalError(resp, request)
 			return
 		}
-		resp.Write([]byte(encodeJson(session.ToResponse())))
+		resp.Write([]byte(coder.EncodeJson(session.ToResponse())))
 	} else {
 		loginIncorrect(resp, request)
 	}
@@ -29,7 +30,7 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
 	registerJson := RegisterRequest{}
-	unmarshallingError := decodeJson(request.Body, &registerJson)
+	unmarshallingError := coder.DecodeJson(request.Body, &registerJson)
 	if unmarshallingError != nil {
 		resp.WriteHeader(http.StatusBadRequest)
 		resp.Write([]byte(unmarshallingError.Error()))
@@ -51,6 +52,6 @@ func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 			internalError(resp, request)
 			return
 		}
-		resp.Write([]byte(encodeJson(session.ToResponse())))
+		resp.Write([]byte(coder.EncodeJson(session.ToResponse())))
 	}
 }
