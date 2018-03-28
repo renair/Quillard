@@ -1,9 +1,13 @@
 package main
 
 import (
+	//core packages
 	"core/account"
+	"core/personages"
 	"core/positions"
 	"core/sessions"
+
+	//other packages
 	"fmt"
 	"log"
 	"net/http"
@@ -47,6 +51,11 @@ func main() {
 	// Setup web handlers
 	// core/account handlers
 	for url, handler := range account.ExportedHandlers() {
+		absoluteUrl := fmt.Sprintf("/%s/%s", account.APIPREFIX, url)
+		handlerMux.HandleFunc(absoluteUrl, handler)
+	}
+	//core/personages handler
+	for url, handler := range personages.ExportedHandlers() {
 		absoluteUrl := fmt.Sprintf("/%s/%s", account.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
