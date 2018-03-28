@@ -2,7 +2,9 @@ package account
 
 import (
 	"core/sessions"
+	"fmt"
 	"net/http"
+	"qutils/basehandlers"
 	"qutils/coder"
 )
 
@@ -11,17 +13,17 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 	userJson := LoginRequest{}
 	unmarshallingError := coder.DecodeJson(request.Body, &userJson)
 	if unmarshallingError != nil {
-		jsonUnmarshallingError(resp, request)
+		basehandlers.JsonUnmarshallingError(resp, request)
 		return
 	}
 	user := logInAccount(userJson)
 	if user != nil {
 		session := sessions.CreateSession(user.Id, user.Email, user.Password)
 		if session == nil {
-			internalError(resp, request)
+			basehandlers.InternalError(resp, request)
 			return
 		}
-		resp.Write([]byte(coder.EncodeJson(session.ToResponse())))
+		fmt.Fprint(resp, []byte(coder.EncodeJson(session.ToResponse())))
 	} else {
 		loginIncorrect(resp, request)
 	}
@@ -32,8 +34,7 @@ func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 	registerJson := RegisterRequest{}
 	unmarshallingError := coder.DecodeJson(request.Body, &registerJson)
 	if unmarshallingError != nil {
-		resp.WriteHeader(http.StatusBadRequest)
-		resp.Write([]byte(unmarshallingError.Error()))
+		basehandlers.JsonUnmarshallingError(resp, request)
 		return
 	}
 	user, registerError := registerAccount(registerJson)
@@ -44,14 +45,14 @@ func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 		case "position":
 			nearbyBuildingsExist(resp, request)
 		default:
-			internalError(resp, request)
+			basehandlers.InternalError(resp, request)
 		}
 	} else {
 		session := sessions.CreateSession(user.Id, user.Email, user.Password)
 		if session == nil {
-			internalError(resp, request)
+			basehandlers.InternalError(resp, request)
 			return
 		}
-		resp.Write([]byte(coder.EncodeJson(session.ToResponse())))
+		fmt.Fprint(resp, coder.EncodeJson(session.ToResponse()))
 	}
 }
