@@ -1,12 +1,20 @@
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="styles/default.css">
 		<title>Test page</title>
 	</head>
 	<body>
-		<div class="header">
-			<h1>This is just a test page.</h1>
+		<div id="login_form">
+			<input type="text" name="email" placeholder="Email">
+			<input type="password" name="password" placeholder="Password">
+			<button id="account_login_button">Log in</button>
+		</div>
+		<div style="display:none;" id="welcome">
+			<h1>Welcome, User=)</h1>
 		</div>
 	</body>
+	<script src="js/lib/jquery.min.js"></script>
+	<script src="js/lib/bootstrap.min.js"></script>
 	<script src="js/main.js"></script>
 </html>

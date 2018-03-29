@@ -23,7 +23,7 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 			basehandlers.InternalError(resp, request)
 			return
 		}
-		fmt.Fprint(resp, []byte(coder.EncodeJson(session.ToResponse())))
+		fmt.Fprint(resp, coder.EncodeJson(session.ToResponse()))
 	} else {
 		loginIncorrect(resp, request)
 	}
