@@ -6,6 +6,14 @@ import (
 	"qutils/coder"
 )
 
+func SuccessResponse(resp http.ResponseWriter, request *http.Request) {
+	response := StatusedResponse{
+		Code:    0,
+		Message: "Operation successed",
+	}
+	fmt.Fprint(resp, coder.EncodeJson(response))
+}
+
 func InternalError(resp http.ResponseWriter, request *http.Request) {
 	err := StatusedResponse{
 		Code:    1,

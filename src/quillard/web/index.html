@@ -1,18 +1,37 @@
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="styles/default.css">
 		<title>Test page</title>
 	</head>
 	<body>
-		<div id="login_form">
-			<input type="text" name="email" placeholder="Email">
-			<input type="password" name="password" placeholder="Password">
-			<button id="account_login_button">Log in</button>
+		<div class="container">
+			<div id="login_form">
+				<input type="text" name="email" placeholder="Email">
+				<input type="password" name="password" placeholder="Password">
+				<button id="account_login_button">Log in</button>
+			</div>
+			<div style="display:none;" class="row" id="personages">
+				<div class="col-md-4 col-sm-6 card">
+					<div class="card-body">
+						<button id="create_personage_button" type="button" class="btn btn-dark">Create new personage</button>
+					</div>
+				</div>
+			</div>
+			<div style="display:none;" id="personage_creation_form">
+				<input type="text" class="personage_name" placeholder="Personage name">
+				<button type="button" id="submit_personage_creation" class="btn btn-dark">Create</button>
+			</style>
 		</div>
-		<div style="display:none;" id="welcome">
-			<h1>Welcome, User=)</h1>
-		</div>
+		<template id="personage_card">
+			<div class="card col-md-4 col-sm-6" added="true">
+				<div class="card-body">
+					Name: <span class="personage_name"></span> <br>
+					Position: <span class="personage_position"></span>
+				</div>
+			</div>
+		</template>
 	</body>
 	<script src="js/lib/jquery.min.js"></script>
 	<script src="js/lib/bootstrap.min.js"></script>

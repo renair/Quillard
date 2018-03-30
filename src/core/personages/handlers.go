@@ -4,6 +4,7 @@ import (
 	"core/sessions"
 	"fmt"
 	"net/http"
+	"qutils/basehandlers"
 	"qutils/coder"
 )
 
@@ -13,14 +14,21 @@ func CreatePersonageHandler(resp http.ResponseWriter, req *http.Request) {
 	session := sessions.GetSession(sessionKey)
 	if session == nil {
 		//handle error "Session expired"
+		basehandlers.InternalError(resp, req)
+		return
 	}
 	data := PersonageRequest{}
-	coder.DecodeJson(req.Body, &data)
+	decodingErr := coder.DecodeJson(req.Body, &data)
+	if decodingErr != nil {
+		basehandlers.JsonUnmarshallingError(resp, req)
+	}
 	registrationError := registerPersonage(session, data)
 	if registrationError != nil {
 		//handle registration error
+		basehandlers.InternalError(resp, req)
+		return
 	}
-	fmt.Fprint(resp, "OK") //TODO handle with default OK handler
+	basehandlers.SuccessResponse(resp, req)
 }
 
 func GetOwnPersonagesHandler(resp http.ResponseWriter, req *http.Request) {

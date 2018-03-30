@@ -48,6 +48,7 @@ func main() {
 	sessions.Init(&connection)
 	account.Init(&connection)
 	positions.Init(&connection)
+	personages.Init(&connection)
 	// Setup web handlers
 	// core/account handlers
 	for url, handler := range account.ExportedHandlers() {
@@ -56,7 +57,7 @@ func main() {
 	}
 	//core/personages handler
 	for url, handler := range personages.ExportedHandlers() {
-		absoluteUrl := fmt.Sprintf("/%s/%s", account.APIPREFIX, url)
+		absoluteUrl := fmt.Sprintf("/%s/%s", personages.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
 	//Setup static files handling
