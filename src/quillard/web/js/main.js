@@ -6,9 +6,12 @@ const PERSONAGE_CREATE = "/personage/create";
 //templates
 const PERSONAGE_CARD = $("#personage_card").html();
 
-let sessionKey = "";
-let personageId = 0;
-let personagePosition = {};
+let session = {
+	sessionKey: "",
+	expirationTime: 0,
+	personageId: 0,
+	personagePosition: {}
+}
 
 //helper function
 function makePost(url, data, successCallback){
@@ -18,7 +21,7 @@ function makePost(url, data, successCallback){
 		"success": successCallback,
 		"data": JSON.stringify(data),
 		"headers":{
-			"Q-Session": sessionKey
+			"Q-Session": session.sessionKey
 		},
 		"dataType": "json"
 	});
@@ -51,8 +54,11 @@ function renderPersonages(data){
 function onLogin(data){
 	console.log(data)
 	if(data.key && data.expires){
-		console.log(data.key + " expire at " + data.expires);
-		sessionKey = data.key;
+		const expireIn = data.expires - getUnixTime();
+		console.log(data.key + " expire in " + expireIn);
+		session.sessionKey = data.key;
+		session.expirationTime = data.expires;
+		localStorage.setItem("userSession", JSON.stringify(session));
 		$("#login_form").hide();
 		makePost(PERSONAGES_LIST, {}, renderPersonages);
 	} else {
@@ -87,7 +93,19 @@ function loginClicked() {
 }
 
 
+function getUnixTime() {
+	return Math.floor(Date.now() / 1000);
+}
+
 $(document).ready(function(){
+	let userSession = JSON.parse(localStorage.getItem("userSession"));
+	if(userSession && userSession.expirationTime > getUnixTime()){
+		session = userSession;
+		$("#login_form").hide();
+		makePost(PERSONAGES_LIST, {}, renderPersonages);
+	} else {
+		localStorage.removeItem("userSession");
+	}
 	$("#account_login_button").click(loginClicked);
 	$("#create_personage_button").click(createPersonageClicked);
 });
