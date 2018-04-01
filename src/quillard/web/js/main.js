@@ -41,7 +41,8 @@ function renderPersonages(data){
 			console.log(personage);
 			let $card = $(PERSONAGE_CARD);
 			$card.find(".personage_name").text(personage.name);
-			$card.find(".personage_position").text("(" + personage.position.longitude + ";" + personage.position.latitude + ")");
+			$card.find(".personage_name").click(getPersonageMover(personage));
+			$card.find(".personage_position").text(personage.position.name + "(" + personage.position.longitude + ";" + personage.position.latitude + ")");
 			$("#personages").append($card);
 		}
 	} else {
@@ -98,6 +99,8 @@ function getUnixTime() {
 }
 
 $(document).ready(function(){
+	initMap();
+	setHomeMarker({latitude: 50.433077, longitude: 30.620238});
 	let userSession = JSON.parse(localStorage.getItem("userSession"));
 	if(userSession && userSession.expirationTime > getUnixTime()){
 		session = userSession;

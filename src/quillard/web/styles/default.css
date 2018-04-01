@@ -1,5 +1,13 @@
-.header {
-	margin: auto;
-	width: 80%;
-	text-align: center;
+#googlemap {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+.mainpage {
+	z-index: 1;
+	position: relative;
 }
