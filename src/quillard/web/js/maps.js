@@ -39,14 +39,46 @@ function setPersonageMarker(personage) {
 		});
 	} else {
 		personageMarker.setPosition(pos);
+		personageMarker.setTitle(personage.name);
 	}
 	map.panTo(pos);
 }
+
+//function required on registration
+
+let mapClickedListener = undefined;
+
+function mapOnClicked(evt) {
+	const coords = {
+		lat: evt.latLng.lat(),
+		lng: evt.latLng.lng()
+	}
+	setHomeMarker(fromLatLng(coords));
+	$("#register_form > input[name=longitude]").val(evt.latLng.lng());
+	$("#register_form > input[name=latitude]").val(evt.latLng.lat());
+}
+
+function setMapClicker() {
+	mapClickedListener = map.addListener("click", mapOnClicked);
+}
+
+function disableMapClicker() {
+	google.maps.event.removeListener(mapClickedListener);
+}
+
+//helper functions
 
 function toLatLng(position) {
 	return {
 		lat: position.latitude,
 		lng: position.longitude
+	}
+}
+
+function fromLatLng(pos) {
+	return {
+		latitude: pos.lat,
+		longitude: pos.lng
 	}
 }
 

@@ -7,6 +7,7 @@ type Position struct {
 	Name      string  `json:"name,omitempty"`
 }
 
+//convertion for db query
 func (pos Position) toKeys() map[string]interface{} {
 	return map[string]interface{}{
 		"longitude": pos.Longitude,
