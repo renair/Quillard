@@ -13,7 +13,7 @@ import (
 //Respond with JSON with error #1 'This account doesn't exists or password incorrect'
 func loginIncorrect(resp http.ResponseWriter, request *http.Request) {
 	err := basehandlers.StatusedResponse{
-		Code:    3,
+		Code:    basehandlers.LASTCODE + 1,
 		Message: "This account doesn't exists or password incorrect",
 	}
 	fmt.Fprint(resp, coder.EncodeJson(err))
@@ -22,7 +22,7 @@ func loginIncorrect(resp http.ResponseWriter, request *http.Request) {
 //Respond with JSON with error #2 'This email already registered'
 func emailAlreadyExists(resp http.ResponseWriter, req *http.Request) {
 	err := basehandlers.StatusedResponse{
-		Code:    4,
+		Code:    basehandlers.LASTCODE + 2,
 		Message: "This email already registered",
 	}
 	fmt.Fprint(resp, coder.EncodeJson(err))
@@ -31,7 +31,7 @@ func emailAlreadyExists(resp http.ResponseWriter, req *http.Request) {
 //Respond with JSON with error #3 'This nickname already exists'
 func nearbyBuildingsExist(resp http.ResponseWriter, req *http.Request) {
 	err := basehandlers.StatusedResponse{
-		Code:    5,
+		Code:    basehandlers.LASTCODE + 3,
 		Message: "There is some structures near you",
 	}
 	fmt.Fprint(resp, coder.EncodeJson(err))

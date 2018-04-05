@@ -60,6 +60,11 @@ func main() {
 		absoluteUrl := fmt.Sprintf("/%s/%s", personages.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
+	//core/positions
+	for url, handler := range positions.ExportedHandlers() {
+		absoluteUrl := fmt.Sprintf("/%s/%s", positions.APIPREFIX, url)
+		handlerMux.HandleFunc(absoluteUrl, handler)
+	}
 	//Setup static files handling
 	handlerMux.Handle("/", getFileHandler("/", "web"))
 	// Starting server

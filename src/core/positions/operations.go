@@ -63,6 +63,23 @@ func GetPositionByCoords(longitude float64, latitude float64) *Position {
 	return &pos
 }
 
+//return position where account home set
+func GetAccountHomePosition(accountId int64) *Position {
+	query := `SELECT id, longitude, latitude, name from %s WHERE id IN (
+		SELECT home_position FROM accounts WHERE id=%d
+	);`
+	query = fmt.Sprintf(query, TABLENAME, accountId)
+	res, err := connection.ManualQuery(query)
+	if err == nil && res.Next() {
+		defer res.Close()
+		pos := Position{}
+		res.Scan(&pos.Id, &pos.Longitude, &pos.Latitude, &pos.Name)
+		return &pos
+	} else {
+		return nil
+	}
+}
+
 func CanBuild(pos Position) bool {
 	query := "SELECT * FROM positions WHERE (latitude BETWEEN %f AND %f) AND (longitude BETWEEN %f AND %f)"
 	query = fmt.Sprintf(query, pos.Latitude-BUILDDISTANCE, pos.Latitude+BUILDDISTANCE, pos.Longitude-BUILDDISTANCE, pos.Longitude+BUILDDISTANCE)

@@ -1,6 +1,7 @@
 package personages
 
 import (
+	"core/positions"
 	"core/sessions"
 	"fmt"
 )
@@ -10,7 +11,7 @@ func registerPersonage(ses *sessions.Session, req PersonageRequest) error {
 	keys := map[string]interface{}{
 		"account_id":  ses.AccountId,
 		"name":        req.Name,
-		"position_id": 1, //TODO replace with home position id
+		"position_id": positions.GetAccountHomePosition(ses.AccountId).Id,
 	}
 	return connection.Insert(TABLENAME, keys)
 }

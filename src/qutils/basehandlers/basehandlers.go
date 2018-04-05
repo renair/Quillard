@@ -6,6 +6,8 @@ import (
 	"qutils/coder"
 )
 
+const LASTCODE int = 3
+
 func SuccessResponse(resp http.ResponseWriter, request *http.Request) {
 	response := StatusedResponse{
 		Code:    0,
@@ -27,6 +29,15 @@ func JsonUnmarshallingError(resp http.ResponseWriter, request *http.Request) {
 	err := StatusedResponse{
 		Code:    2,
 		Message: "Bad formed JSON",
+	}
+	resp.WriteHeader(http.StatusBadRequest)
+	fmt.Fprint(resp, coder.EncodeJson(err))
+}
+
+func UnauthorizedRequest(resp http.ResponseWriter, request *http.Request) {
+	err := StatusedResponse{
+		Code:    3,
+		Message: "You are not authorised. Please log in or register.",
 	}
 	resp.WriteHeader(http.StatusBadRequest)
 	fmt.Fprint(resp, coder.EncodeJson(err))

@@ -3,6 +3,7 @@ const LOGIN_URL = "/account/login";
 const REGISTER_URL = "/account/register";
 const PERSONAGES_LIST = "/personage/list";
 const PERSONAGE_CREATE = "/personage/create";
+const HOME_POSITION = "/position/home";
 
 //templates
 const PERSONAGE_CARD = $("#personage_card").html();
@@ -70,6 +71,7 @@ function onLogin(data){
 		$loginForm.hide();
 		$registerForm.hide();
 		makePost(PERSONAGES_LIST, {}, renderPersonages);
+		makePost(HOME_POSITION, {}, setHomeMarker);
 	} else {
 		statusedAnswer(data);
 	}
@@ -130,12 +132,12 @@ function getUnixTime() {
 
 $(document).ready(function(){
 	initMap();
-	setHomeMarker({latitude: 50.433077, longitude: 30.620238});
 	let userSession = JSON.parse(localStorage.getItem("userSession"));
 	if(userSession && userSession.expirationTime > getUnixTime()){
 		session = userSession;
 		$loginForm.hide();
 		makePost(PERSONAGES_LIST, {}, renderPersonages);
+		makePost(HOME_POSITION, {}, setHomeMarker);
 	} else {
 		localStorage.removeItem("userSession");
 	}
