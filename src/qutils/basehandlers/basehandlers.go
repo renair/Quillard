@@ -39,6 +39,5 @@ func UnauthorizedRequest(resp http.ResponseWriter, request *http.Request) {
 		Code:    3,
 		Message: "You are not authorised. Please log in or register.",
 	}
-	resp.WriteHeader(http.StatusBadRequest)
 	fmt.Fprint(resp, coder.EncodeJson(err))
 }

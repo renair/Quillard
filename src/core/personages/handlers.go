@@ -13,8 +13,7 @@ func CreatePersonageHandler(resp http.ResponseWriter, req *http.Request) {
 	sessionKey := req.Header.Get("Q-Session")
 	session := sessions.GetSession(sessionKey)
 	if session == nil {
-		//handle error "Session expired"
-		basehandlers.InternalError(resp, req)
+		basehandlers.UnauthorizedRequest(resp, req)
 		return
 	}
 	data := PersonageRequest{}
@@ -24,7 +23,7 @@ func CreatePersonageHandler(resp http.ResponseWriter, req *http.Request) {
 	}
 	registrationError := registerPersonage(session, data)
 	if registrationError != nil {
-		//handle registration error
+		//it's mean that some error occured during inserting
 		basehandlers.InternalError(resp, req)
 		return
 	}
@@ -36,7 +35,8 @@ func GetOwnPersonagesHandler(resp http.ResponseWriter, req *http.Request) {
 	sessionKey := req.Header.Get("Q-Session")
 	session := sessions.GetSession(sessionKey)
 	if session == nil {
-		//handle error "Session expired"
+		basehandlers.UnauthorizedRequest(resp, req)
+		return
 	}
 	personagesList := getAccountPersonages(session)
 	fmt.Fprint(resp, coder.EncodeJson(personagesList))
