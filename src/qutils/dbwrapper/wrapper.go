@@ -87,6 +87,31 @@ func (conn *DBConnection) Insert(table string, data map[string]interface{}) erro
 	return err
 }
 
+func (conn *DBConnection) MultipleInsert(table string, columns []string, data [][]interface{}) error {
+	fields := strings.Join(columns, ",")
+	valuesBuilder := strings.Builder{}
+	for i, values := range data {
+		valuesBuilder.WriteRune('(')
+		for q := 0; q < len(values); q++ {
+			stringifiedVal := fmt.Sprintf("'%v'", values[q])
+			if q == len(values)-1 {
+				valuesBuilder.WriteString(stringifiedVal)
+			} else {
+				valuesBuilder.WriteString(stringifiedVal + ",")
+			}
+		}
+		if i == len(values)-1 {
+			valuesBuilder.WriteRune(')')
+		} else {
+			valuesBuilder.WriteString("),")
+		}
+	}
+	values := valuesBuilder.String()[:valuesBuilder.Len()-1]
+	query := fmt.Sprintf("INSERT INTO %s(%s) VALUES %s;", table, fields, values)
+	_, err := conn.connection.Exec(query)
+	return err
+}
+
 func (conn *DBConnection) ManualQuery(query string) (*sql.Rows, error) {
 	return conn.connection.Query(query)
 }

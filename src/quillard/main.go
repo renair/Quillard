@@ -5,6 +5,7 @@ import (
 	"core/account"
 	"core/personages"
 	"core/positions"
+	"core/resources"
 	"core/sessions"
 
 	//other packages
@@ -49,6 +50,7 @@ func main() {
 	account.Init(&connection)
 	positions.Init(&connection)
 	personages.Init(&connection)
+	resources.Init(&connection)
 	// Setup web handlers
 	// core/account handlers
 	for url, handler := range account.ExportedHandlers() {
@@ -63,6 +65,11 @@ func main() {
 	//core/positions
 	for url, handler := range positions.ExportedHandlers() {
 		absoluteUrl := fmt.Sprintf("/%s/%s", positions.APIPREFIX, url)
+		handlerMux.HandleFunc(absoluteUrl, handler)
+	}
+	//core/resources
+	for url, handler := range resources.ExportedHandlers() {
+		absoluteUrl := fmt.Sprintf("/%s/%s", resources.APIPREFIX, url)
 		handlerMux.HandleFunc(absoluteUrl, handler)
 	}
 	//Setup static files handling
