@@ -7,7 +7,7 @@ import (
 
 const (
 	STORAGETABLE = "resource_storages"
-	TYPETABLE    = "recource_types"
+	TYPETABLE    = "resource_types"
 	APIPREFIX    = "resources"
 )
 

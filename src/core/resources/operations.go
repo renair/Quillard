@@ -31,11 +31,11 @@ func AddResource(personageId int64, resourceId int32, amount int64) error {
 }
 
 func GetPersonageResources(personageId int64) []ResourceResponse {
-	query := `SELECT resource_id, name, amount
-			 FROM resource_storages INNER JOIN resource_types ON resource_storages.resource_id=resource_types.id;`
+	query := `SELECT resource_id, name, amount FROM resource_storages INNER JOIN resource_types ON resource_storages.resource_id=resource_types.id AND personage_id=%d;`
+	query = fmt.Sprintf(query, personageId)
 	res, err := connection.ManualQuery(query)
 	var result []ResourceResponse
-	for err != nil && res.Next() {
+	for err == nil && res.Next() {
 		storedResource := ResourceResponse{}
 		res.Scan(&storedResource.Id, &storedResource.Name, &storedResource.Amount)
 		result = append(result, storedResource)

@@ -100,14 +100,13 @@ func (conn *DBConnection) MultipleInsert(table string, columns []string, data []
 				valuesBuilder.WriteString(stringifiedVal + ",")
 			}
 		}
-		if i == len(values)-1 {
+		if i == len(data)-1 {
 			valuesBuilder.WriteRune(')')
 		} else {
 			valuesBuilder.WriteString("),")
 		}
 	}
-	values := valuesBuilder.String()[:valuesBuilder.Len()-1]
-	query := fmt.Sprintf("INSERT INTO %s(%s) VALUES %s;", table, fields, values)
+	query := fmt.Sprintf("INSERT INTO %s(%s) VALUES %s;", table, fields, valuesBuilder.String())
 	_, err := conn.connection.Exec(query)
 	return err
 }

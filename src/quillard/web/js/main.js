@@ -4,6 +4,7 @@ const REGISTER_URL = "/account/register";
 const PERSONAGES_LIST = "/personage/list";
 const PERSONAGE_CREATE = "/personage/create";
 const HOME_POSITION = "/position/home";
+const MY_RESOURCES = "/resources/myresources"
 
 //templates
 const PERSONAGE_CARD = $("#personage_card").html();
@@ -45,11 +46,20 @@ function renderPersonages(data){
 	if(data.constructor == Array){
 		$("#personages div[added=true]").remove();
 		for(let i = 0; i < data.length;++i){
-			personage = data[i];
+			let personage = data[i];
 			console.log(personage);
 			let $card = $(PERSONAGE_CARD);
 			$card.find(".personage_name").text(personage.name);
 			$card.find(".personage_name").click(getPersonageMover(personage));
+			//code to remove
+			console.log(personage.id)
+			$card.find(".personage_name").click(function(){
+				const pers_id = personage.id
+				console.log(personage)
+				makePost(MY_RESOURCES, {personage_id:pers_id},function(data){
+					console.log(data);
+				});
+			});
 			$card.find(".personage_position").text(personage.position.name + "(" +
 				 personage.position.longitude + ";" + personage.position.latitude + ")");
 			$personages.append($card);
