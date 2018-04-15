@@ -18,8 +18,8 @@ func LoginHandler(resp http.ResponseWriter, request *http.Request) {
 	}
 	user := logInAccount(userJson)
 	if user != nil {
-		session := sessions.CreateSession(user.Id, user.Email, user.Password)
-		if session == nil {
+		session, ok := sessions.CreateSession(user.Id, user.Email, user.Password)
+		if !ok {
 			basehandlers.InternalError(resp, request)
 			return
 		}
@@ -48,8 +48,8 @@ func RegisterHandler(resp http.ResponseWriter, request *http.Request) {
 			basehandlers.InternalError(resp, request)
 		}
 	} else {
-		session := sessions.CreateSession(user.Id, user.Email, user.Password)
-		if session == nil {
+		session, ok := sessions.CreateSession(user.Id, user.Email, user.Password)
+		if !ok {
 			basehandlers.InternalError(resp, request)
 			return
 		}

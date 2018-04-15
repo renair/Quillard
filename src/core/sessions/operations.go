@@ -1,10 +1,6 @@
 package sessions
 
-import (
-	"fmt"
-)
-
-func CreateSession(id int64, keywords ...string) *Session {
+func CreateSession(id int64, keywords ...string) (Session, bool) {
 	checkConnection()
 	utc := getCurrentUTC()
 	keys := map[string]interface{}{
@@ -13,32 +9,38 @@ func CreateSession(id int64, keywords ...string) *Session {
 		"created": utc,
 		"expires": utc + EXPIRETIME,
 	}
-	connection.BeginTransaction()
 	insertionErr := connection.Insert(TABLENAME, keys)
 	if insertionErr != nil {
-		connection.RollbackTransaction()
-		return nil
+		return Session{}, false
 	}
-	connection.CommitTransaction()
-	return &Session{
-		Id:      -1,
-		AccountId:  id,
-		Key:     keys["key"].(string),
-		Created: utc,
-		Expires: utc + EXPIRETIME,
+	session := Session{
+		Id:        -1,
+		AccountId: id,
+		Key:       keys["key"].(string),
+		Created:   utc,
+		Expires:   utc + EXPIRETIME,
 	}
+	activeSessions.Store(session.Key, &session)
+	return session, true
 }
 
-func GetSession(key string) *Session {
-	checkConnection()
-	var ses *Session = nil
-	query := fmt.Sprintf("SELECT id, user_id, key, created, expires FROM sessions WHERE key='%s' AND expires>%d", key, getCurrentUTC())
-	rows, _ := connection.ManualQuery(query)
-	if rows.Next() {
-		ses = new(Session)
-		rows.Scan(&ses.Id, &ses.AccountId, &ses.Key, &ses.Created, &ses.Expires)
+func GetSession(key string) (Session, bool) {
+	//checkConnection()
+	//var ses *Session = nil
+	//query := fmt.Sprintf("SELECT id, user_id, key, created, expires FROM sessions WHERE key='%s' AND expires>%d", key, getCurrentUTC())
+	//rows, _ := connection.ManualQuery(query)
+	//	if rows.Next() {
+	//		ses = new(Session)
+	//		rows.Scan(&ses.Id, &ses.AccountId, &ses.Key, &ses.Created, &ses.Expires)
+	//	}
+	//return ses
+	sesInterface, ok := activeSessions.Load(key)
+	if !ok {
+		return Session{}, false
 	}
-	return ses
+	session := sesInterface.(*Session)
+	session.Expires = getCurrentUTC() + EXPIRETIME
+	return *, true
 }
 
 //Operation from session

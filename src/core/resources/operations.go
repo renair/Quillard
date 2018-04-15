@@ -30,9 +30,9 @@ func AddResource(personageId int64, resourceId int32, amount int64) error {
 	return err
 }
 
-func GetPersonageResources(personageId int64) []ResourceResponse {
-	query := `SELECT resource_id, name, amount FROM resource_storages INNER JOIN resource_types ON resource_storages.resource_id=resource_types.id AND personage_id=%d;`
-	query = fmt.Sprintf(query, personageId)
+func GetPersonageResources(personageId int64, accountId int64) []ResourceResponse {
+	query := `SELECT resource_id, name, amount FROM resource_storages INNER JOIN resource_types ON resource_storages.resource_id=resource_types.id AND personage_id=%d AND personage_id IN (SELECT id FROM personages where account_id=%d);`
+	query = fmt.Sprintf(query, personageId, accountId)
 	res, err := connection.ManualQuery(query)
 	var result []ResourceResponse
 	for err == nil && res.Next() {

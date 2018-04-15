@@ -11,8 +11,8 @@ import (
 func PersonageResourcesHandler(resp http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	sessionKey := req.Header.Get("Q-Session")
-	session := sessions.GetSession(sessionKey)
-	if session == nil {
+	session, ok := sessions.GetSession(sessionKey)
+	if !ok {
 		basehandlers.UnauthorizedRequest(resp, req)
 		return
 	}
@@ -21,10 +21,10 @@ func PersonageResourcesHandler(resp http.ResponseWriter, req *http.Request) {
 	if decodingError != nil {
 		basehandlers.JsonUnmarshallingError(resp, req)
 	}
-	personageResources := GetPersonageResources(reqData.PersonageId)
+	personageResources := GetPersonageResources(reqData.PersonageId, session.AccountId)
 	if len(personageResources) == 0 {
 		InitResourcesForPersonage(reqData.PersonageId)
-		personageResources = GetPersonageResources(reqData.PersonageId)
+		personageResources = GetPersonageResources(reqData.PersonageId, session.AccountId)
 	}
 	encodedAnswer := coder.EncodeJson(personageResources)
 	fmt.Fprint(resp, encodedAnswer)

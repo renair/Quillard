@@ -11,8 +11,8 @@ import (
 func AccountHomeHandler(resp http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	sessionKey := req.Header.Get("Q-Session")
-	session := sessions.GetSession(sessionKey)
-	if session == nil {
+	session, ok := sessions.GetSession(sessionKey)
+	if !ok {
 		basehandlers.UnauthorizedRequest(resp, req)
 		return
 	}
