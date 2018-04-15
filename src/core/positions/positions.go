@@ -9,6 +9,7 @@ const (
 	TABLENAME     = "positions"
 	BUILDDISTANCE = 0.0003
 	APIPREFIX     = "position"
+	VIEWDISTANCE  = 0.01
 )
 
 var connection *dbwrapper.DBConnection = nil
@@ -27,6 +28,7 @@ func checkConnection() {
 
 func ExportedHandlers() map[string]http.HandlerFunc {
 	return map[string]http.HandlerFunc{
-		"home": AccountHomeHandler,
+		"home":    AccountHomeHandler,
+		"nearest": PersonageGetNearestHomes,
 	}
 }

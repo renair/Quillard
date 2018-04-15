@@ -1,6 +1,7 @@
 package positions
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -81,10 +82,40 @@ func GetAccountHomePosition(accountId int64) *Position {
 }
 
 func CanBuild(pos Position) bool {
+	checkConnection()
 	query := "SELECT * FROM positions WHERE (latitude BETWEEN %f AND %f) AND (longitude BETWEEN %f AND %f)"
 	query = fmt.Sprintf(query, pos.Latitude-BUILDDISTANCE, pos.Latitude+BUILDDISTANCE, pos.Longitude-BUILDDISTANCE, pos.Longitude+BUILDDISTANCE)
 	res, err := connection.ManualQuery(query)
 	return err == nil && !res.Next()
+}
+
+func getNearestHomes(personageId int64, accountId int64, distance float64) ([]Position, error) {
+	checkConnection()
+	//select personage current position
+	var result []Position
+	query := "SELECT latitude, longitude FROM positions WHERE id IN (SELECT position_id FROM personages WHERE id = %d AND account_id=%d);"
+	query = fmt.Sprintf(query, personageId, accountId)
+	resultSet, err := connection.ManualQuery(query)
+	if err != nil {
+		return result, err
+	}
+	var latitude, longitude float64
+	if !resultSet.Next() {
+		return result, errors.New("Personage dont belong to this account!")
+	}
+	resultSet.Scan(&latitude, &longitude)
+	query = "SELECT id, longitude, latitude, name FROM positions WHERE (latitude BETWEEN %f AND %f) AND (longitude BETWEEN %f AND %f)"
+	query = fmt.Sprintf(query, latitude-distance, latitude+distance, longitude-distance, longitude+distance)
+	resultSet, err = connection.ManualQuery(query)
+	if err != nil {
+		return result, err
+	}
+	for resultSet.Next() {
+		pos := Position{}
+		resultSet.Scan(&pos.Id, &pos.Longitude, &pos.Latitude, &pos.Name)
+		result = append(result, pos)
+	}
+	return result, nil
 }
 
 //Save position in db

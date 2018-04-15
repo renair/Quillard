@@ -31,7 +31,7 @@ func sessionClearer(durr time.Duration) {
 		currTime := getCurrentUTC()
 		//use anonymous function here to use calculate current UTC time once
 		activeSessions.Range(func(k, v interface{}) bool {
-			session := v.(Session)
+			session := v.(*Session)
 			if session.Expires <= currTime {
 				activeSessions.Delete(k)
 			}

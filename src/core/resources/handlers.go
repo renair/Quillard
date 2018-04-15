@@ -10,8 +10,7 @@ import (
 
 func PersonageResourcesHandler(resp http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
-	sessionKey := req.Header.Get("Q-Session")
-	session, ok := sessions.GetSession(sessionKey)
+	session, ok := sessions.GetSessionByRequest(req)
 	if !ok {
 		basehandlers.UnauthorizedRequest(resp, req)
 		return

@@ -7,6 +7,11 @@ type Position struct {
 	Name      string  `json:"name,omitempty"`
 }
 
+//User request JSON objects
+type PersonageId struct {
+	Id int64 `json:"personage_id"`
+}
+
 //convertion for db query
 func (pos Position) toKeys() map[string]interface{} {
 	return map[string]interface{}{
