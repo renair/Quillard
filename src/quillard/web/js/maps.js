@@ -20,12 +20,17 @@ function setHomeMarker(position) {
 		homeMarker = new google.maps.Marker({
 			position: pos,
 			map: map,
-			title: position.name
+			title: position.name,
+			icon:"/icons/home.png"
 		});
 	} else {
 		homeMarker.setPosition(pos);
 	}
 	map.panTo(pos);
+}
+
+function addHomeMarker() {
+	
 }
 
 function setPersonageMarker(personage) {
@@ -35,6 +40,7 @@ function setPersonageMarker(personage) {
 			position: pos,
 			map: map,
 			title: personage.name,
+			icon:"/icons/personage.png",
 			draggable: true
 		});
 	} else {
@@ -82,9 +88,17 @@ function fromLatLng(pos) {
 	}
 }
 
-//closure for moving map
+//closure for moving personage marker
 function getPersonageMover(personage) {
 	return function(){
 		setPersonageMarker(personage);
+	}
+}
+
+//closure for moving map
+function getMapMover(position) {
+	return function() {
+		const pos = toLatLng(position);
+		map.panTo(pos);
 	}
 }

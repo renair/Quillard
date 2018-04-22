@@ -8,8 +8,11 @@ const MY_RESOURCES = "/resources/myresources"
 
 //templates
 const PERSONAGE_CARD = $("#personage_card").html();
+const RESOURCE = $("#resource").html();
 
 //elements
+const $pageHeader = $("#page_header");
+const $resources = $pageHeader.find(".resources");
 const $loginForm = $("#login_form");
 const $registerForm = $("#register_form");
 const $personages = $("#personages");
@@ -19,7 +22,7 @@ let session = {
 	sessionKey: "",
 	expirationTime: 0,
 	personageId: 0,
-	personagePosition: {}
+	personagePosition: {},
 }
 
 //helper function
@@ -42,26 +45,53 @@ function statusedAnswer(data){
 	}
 }
 
+function renderPersonageResourses(resources_data) {
+	$resources.html("");
+	console.log(resources_data);
+	for(let i = 0; i < resources_data.length;i++) {
+		const $res = $(RESOURCE);
+		const res = resources_data[i];
+		$res.text(res.name + " x" + res.amount);
+		$res.attr("res-id", res.id);
+		$resources.append($res);
+	}
+}
+
+function personageChoseClicked() {
+	$pageHeader.hide();
+	$personages.show()
+}
+
+function getPersonageSelector(personage) {
+	return function() {
+		makePost(MY_RESOURCES, {personage_id:personage.id}, renderPersonageResourses);
+		$pageHeader.find(".personage_name").text(personage.name);
+		$pageHeader.find(".personage_name").off("click");
+		$pageHeader.find(".personage_name").click(getMapMover(personage.position));
+		$pageHeader.find(".home_location").off("click");
+		$pageHeader.find(".home_location").click(() => {makePost(HOME_POSITION, {}, setHomeMarker);});
+		$pageHeader.find(".chose_personage").click(personageChoseClicked);
+		$pageHeader.show();
+		$personages.hide();
+	}
+}
+
 function renderPersonages(data){
 	if(data.constructor == Array){
 		$("#personages div[added=true]").remove();
+		if(data.length >= 3){
+			$("#personages > .personage_creating_panel").hide();
+		} else {
+			$("#personages > .personage_creating_panel").show();
+		}
 		for(let i = 0; i < data.length;++i){
-			let personage = data[i];
+			const personage = data[i];
 			console.log(personage);
 			let $card = $(PERSONAGE_CARD);
 			$card.find(".personage_name").text(personage.name);
-			$card.find(".personage_name").click(getPersonageMover(personage));
-			//code to remove
-			console.log(personage.id)
-			$card.find(".personage_name").click(function(){
-				const pers_id = personage.id
-				console.log(personage)
-				makePost(MY_RESOURCES, {personage_id:pers_id},function(data){
-					console.log(data);
-				});
-			});
-			$card.find(".personage_position").text(personage.position.name + "(" +
-				 personage.position.longitude + ";" + personage.position.latitude + ")");
+			$card.find(".personage_name").click(getPersonageSelector(personage));
+			$card.find(".personage_position").text(personage.position.name);
+			$card.find(".personage_position").click(getPersonageMover(personage));
 			$personages.append($card);
 		}	
 	} else {

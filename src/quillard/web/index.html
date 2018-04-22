@@ -4,10 +4,36 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="styles/default.css">
-		<title>Test page</title>
+		<title>Quillard</title>
 	</head>
 	<body>
 		<div id="googlemap"></div>
+		<div class="container-fluid mainpage" id="page_header" style="display:none;">
+			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+			    	<span class="navbar-brand personage_name">PersonageName</span>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenueItems" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarMenueItems">
+				    	<ul class="navbar-nav">
+				    		<li class="nav-item nav-link">
+							<span class="home_location">My home</span>
+						</li>
+				    		<!-- <li class="nav-item nav-link" href="#">
+							<span class="current_position">Current position</span>
+						</li> -->
+						<li class="nav-item dropdown" href="#">
+							<span class="nav-link dropdown-togle" id="resourcesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Resources</span>
+							<div class="dropdown-menu resources" aria-labelledby="resourcesDropdown">
+							</div>
+						</li>
+						<li class="nav-item nav-link" href="#">
+							<span class="chose_personage">Choose personage</span>
+						</li>
+				  	</ul>
+				</div>
+			</nav>
+		</div>
 		<div class="container mainpage">
 			<div id="login_form">
 				<input type="text" name="email" placeholder="Email">
@@ -24,7 +50,7 @@
 				<button id="account_register_button">Register</button>
 			</div>
 			<div style="display:none;" class="row" id="personages">
-				<div class="col-md-4 col-sm-6 card">
+				<div class="col-md-4 col-sm-6 card personage_creating_panel">
 					<div class="card-body">
 						<button id="create_personage_button" type="button" class="btn btn-dark">Create new personage</button>
 					</div>
@@ -42,6 +68,9 @@
 					Position: <span class="personage_position"></span>
 				</div>
 			</div>
+		</template>
+		<template id="resource">
+			<span class="dropdown-item"></span>
 		</template>
 	</body>
 	<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdlEKDFy3bNZ4ep4lv_KWj2H8g-87IF7A"></script>

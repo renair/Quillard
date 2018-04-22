@@ -7,6 +7,11 @@
 	z-index: 0;
 }
 
+#page_header {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
 .mainpage {
 	z-index: 1;
 	position: relative;
